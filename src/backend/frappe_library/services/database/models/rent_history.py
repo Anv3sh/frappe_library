@@ -2,7 +2,7 @@ from frappe_library.services.database.models.base import SQLModelSerializable
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, List, Optional
 from uuid import UUID, uuid4
-from sqlalchemy.sql.sqltypes import Date, Integer, Float 
+ 
 import sqlalchemy as sa
 
 from sqlmodel import Field, Relationship, SQLModel
@@ -23,5 +23,5 @@ class RentHistory(SQLModelSerializable,table=True):
         sa_column=sa.Column(sa.DateTime(timezone=True), nullable=False),
         default_factory=lambda: datetime.utcnow().replace(tzinfo=timezone.utc),
     )
-    due_at: Optional[datetime] = Field(nullable=False)
+    return_at: Optional[datetime] = Field(nullable=False)
     charge_per_day_in_inr: int = Field(nullable=False)
