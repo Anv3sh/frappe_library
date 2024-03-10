@@ -38,3 +38,7 @@ class IssueBookSchema(BaseModel):
 
 class ReturnBookSchema(BaseModel):
     id:UUID
+    
+class SearchBook(BaseModel):
+    title: Optional[str] = None
+    author: Optional[str] = None

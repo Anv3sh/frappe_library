@@ -2,10 +2,10 @@ from frappe_library.services.api.router import test_bp, books_bp, members_bp
 from frappe_library.services.database.models import Book,Member,IssueHistory
 import requests
 from flask import request, Response
-from frappe_library.services.constants import FRAPPE_API
+from frappe_library.services.constants import FRAPPE_API, DEFAULT_PAGINATION_OFFSET
 from sqlmodel import Session,select
 from frappe_library.services.database.connections import engine
-from frappe_library.services.api.schema import BookSchema, MemberSchema, IssueBookSchema, ReturnBookSchema
+from frappe_library.services.api.schema import BookSchema, MemberSchema, IssueBookSchema, ReturnBookSchema, SearchBook
 from frappe_library.services.logger import frappe_logger
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError  
@@ -91,8 +91,14 @@ def issue_book_to_member():
 @books_bp.route("/issued-books/", methods=["GET"])
 def issue_history():
     try:
+        page = request.args.get('page', 1, type=int)
         with Session(engine) as session:
-            issued_books = session.exec(select(IssueHistory, Book, Member).join(Book, Book.id== IssueHistory.book_id).join(Member, Member.member_id == IssueHistory.member_id)).all()
+            stmt = (select(IssueHistory, Book, Member)  
+                    .join(Book, Book.id == IssueHistory.book_id)  
+                    .join(Member, Member.member_id == IssueHistory.member_id)  
+                    .offset((page - 1) * DEFAULT_PAGINATION_OFFSET)  
+                    .limit(DEFAULT_PAGINATION_OFFSET))  
+            issued_books = session.exec(stmt).fetchall()  
             issued_books_objs = IssueHistoryParser.get_instance_objs(issued_books)
         return Response(json.dumps(issued_books_objs,cls=CustomEncoder),status=200,mimetype="application/json")
     except Exception as e:
@@ -102,9 +108,11 @@ def issue_history():
 @books_bp.route("/available-books/", methods=["GET"])
 def available_books():
     try:
+        page = request.args.get('page', 1, type=int)
         with Session(engine) as session:
-            available_books = session.exec(select(Book).where(Book.is_available==True)).all()
-            available_books_objs = BooksParser.get_instance_objs(available_books)
+            stmt = select(Book).where(Book.is_available==True).offset((page - 1) * DEFAULT_PAGINATION_OFFSET).limit(DEFAULT_PAGINATION_OFFSET)  
+            available_books = session.exec(stmt).fetchall()  
+            available_books_objs = BooksParser.get_instance_objs(available_books) 
         return Response(json.dumps(available_books_objs,cls=CustomEncoder),status=200,mimetype="application/json")
     except Exception as e:
         frappe_logger.error(f"Exception occurred due to: {e}")
@@ -130,4 +138,29 @@ def return_book():
         frappe_logger.error(f"Exception occurred due to: {e}")
         return Response(json.dumps({"detail":"Unable to return book."}), status=400, mimetype="application/json")
 
+@books_bp.route("/search-book/",methods=["GET"])
+def search_book():
+    try:
+        title = request.args.get('title')  
+        author = request.args.get('author')  
+        validated_data = SearchBook(title=title, author=author)
+    except ValidationError as e:
+        frappe_logger.error(e)
+        return Response(e, status=400, mimetype="application/json")
     
+    try:
+        with Session(engine) as session:
+            statement = select(Book)
+            if validated_data.title:
+                statement = statement.filter(Book.title.ilike(f"%{validated_data.title}%"))
+            if validated_data.author:
+                statement = statement.filter(Book.authors.ilike(f"%{validated_data.author}%"))
+            book = session.exec(statement).all()
+            print(book)
+            book_objs = BooksParser.get_instance_objs(book)
+        return Response(json.dumps(book_objs,cls=CustomEncoder),status=200,mimetype="application/json")
+    except Exception as e:
+        frappe_logger.error(f"Exception occurred due to: {e}")
+        return Response(json.dumps({"detail":"Unable to search book."}), status=400, mimetype="application/json")
+
+            
