@@ -35,3 +35,6 @@ class IssueBookSchema(BaseModel):
     @validator('return_before', pre=True)  
     def convert_epoch_to_datetime(cls, value):  
         return datetime.fromtimestamp(value) 
+
+class ReturnBookSchema(BaseModel):
+    id:UUID

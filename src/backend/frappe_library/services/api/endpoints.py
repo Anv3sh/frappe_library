@@ -5,13 +5,14 @@ from flask import request, Response
 from frappe_library.services.constants import FRAPPE_API
 from sqlmodel import Session,select
 from frappe_library.services.database.connections import engine
-from frappe_library.services.api.schema import BookSchema, MemberSchema, IssueBookSchema
+from frappe_library.services.api.schema import BookSchema, MemberSchema, IssueBookSchema, ReturnBookSchema
 from frappe_library.services.logger import frappe_logger
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError  
 import json
 from frappe_library.services.api.utils import IssueHistoryParser, BooksParser
 from frappe_library.services.custom_json_encoder import CustomEncoder
+from datetime import datetime, timezone
 
 @test_bp.route("/")
 def test():
@@ -108,4 +109,25 @@ def available_books():
     except Exception as e:
         frappe_logger.error(f"Exception occurred due to: {e}")
         return Response(json.dumps({"detail":"Unable to get available books list."}),status=400,mimetype="application/json")
+
+@books_bp.route("/return-book/",methods = ["PATCH"])
+def return_book():
+    try:
+        validated_data = ReturnBookSchema(**request.get_json())
+    except ValidationError as e:
+        frappe_logger.error(e)
+        return Response(e, status=400, mimetype="application/json")
+    try:
+        rent = 0
+        with Session(engine) as session:
+            issue_history = session.exec(select(IssueHistory).where(IssueHistory.id==validated_data.id)).first()
+            issue_history.is_returned=True
+            rent = (datetime.utcnow().replace(tzinfo=timezone.utc)-issue_history.issued_at).days * issue_history.charge_per_day_in_inr
+            session.add(issue_history)
+            session.commit()
+        return Response(json.dumps({"detail":"Book return successfully.", "rent":rent}),status=200,mimetype="application/json")
+    except Exception as e:
+        frappe_logger.error(f"Exception occurred due to: {e}")
+        return Response(json.dumps({"detail":"Unable to return book."}), status=400, mimetype="application/json")
+
     
