@@ -1,3 +1,3 @@
 import logging
 
-logger = logging.getLogger("frappe_library")
+frappe_logger = logging.getLogger("gunicorn.error")

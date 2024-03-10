@@ -12,16 +12,17 @@ if TYPE_CHECKING:
     from frappe_library.services.database.models.book import Book
     
 
-class RentHistory(SQLModelSerializable,table=True):
-    __tablename__="rent_history"
+class IssueHistory(SQLModelSerializable,table=True):
+    __tablename__="issue_history"
     id: UUID = Field(default_factory=uuid4, primary_key=True, unique=True)
     member_id: UUID = Field(default=None, foreign_key="member.member_id")
-    book_id: UUID = Field(default=None, foreign_key="book.book_id")
-    member: "Member" = Relationship(back_populates="books")
-    book: "Book" = Relationship(back_populates="member")
+    book_id: UUID = Field(default=None, foreign_key="book.id")
+    member: "Member" = Relationship(back_populates="issue_history")  
+    book: "Book" = Relationship(back_populates="issue_history")  
     issued_at: Optional[datetime] = Field(
         sa_column=sa.Column(sa.DateTime(timezone=True), nullable=False),
         default_factory=lambda: datetime.utcnow().replace(tzinfo=timezone.utc),
     )
-    return_at: Optional[datetime] = Field(nullable=False)
+    return_before: Optional[datetime] = Field(nullable=False)
+    is_returned: bool = Field(default=False)
     charge_per_day_in_inr: int = Field(nullable=False)

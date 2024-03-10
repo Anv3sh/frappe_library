@@ -3,15 +3,17 @@ from pathlib import Path
 from alembic import command
 from alembic.config import Config
 from sqlmodel import Session, SQLModel, create_engine
-from frappe_library.services.logger import logger
-from frappe_library.services.database import models
+import logging
+from frappe_library.services.database.models import Book,Member,IssueHistory
 
+
+logger = logging.getLogger(__name__)
 class DatabaseManager:
     def __init__(self, database_url: str):
         self.database_url = database_url
         backend_dir = Path(__file__).parent.parent.parent
-        self.script_location = backend_dir / "alembic"
-        self.alembic_cfg_path = backend_dir / "alembic.ini"
+        # self.script_location = backend_dir / "alembic"
+        # self.alembic_cfg_path = backend_dir / "alembic.ini"
         self.engine = create_engine(database_url)  # noqa
 
     def __enter__(self):
@@ -32,17 +34,13 @@ class DatabaseManager:
         with Session(self.engine) as session:
             yield session
 
-    def run_migrations(self):
-        logger.info(f"Running DB migrations in {self.script_location}")
-        alembic_cfg = Config()
-        alembic_cfg.set_main_option("script_location", str(self.script_location))
-        alembic_cfg.set_main_option("sqlalchemy.url", self.database_url)
-        command.upgrade(alembic_cfg, "head")
 
     def create_db_and_tables(self):
         logger.info("Creating database and tables")
         try:
             SQLModel.metadata.create_all(self.engine)
+            # for table in to_be_created_tables:
+            #     SQLModel.metadata.tables[table].create(self.engine)
         except Exception as exc:
             print(f"Error creating database and tables: {exc}")
             raise RuntimeError("Error creating database and tables") from exc
@@ -53,8 +51,7 @@ class DatabaseManager:
         required_tables = [
             "book",
             "member",
-            "rent_history",
-            "alembic_version"
+            "issue_history",
         ]
         for table in inspector.get_table_names():
             if table not in required_tables:
@@ -63,6 +60,7 @@ class DatabaseManager:
                 raise RuntimeError(
                     "Something went wrong creating the database and tables."
                 )
+        
         else:
             logger.info("Database and tables created successfully")
         logger.info(inspector.get_table_names())

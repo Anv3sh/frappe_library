@@ -9,7 +9,7 @@ from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
     from frappe_library.services.database.models.book import Book
-    from frappe_library.services.database.models.rent_history import RentHistory
+    from frappe_library.services.database.models.issue_history import IssueHistory
 
 class Member(SQLModelSerializable, table=True):
     __tablename__="member"
@@ -25,4 +25,4 @@ class Member(SQLModelSerializable, table=True):
         sa_column=sa.Column(sa.DateTime(timezone=True), nullable=False),
         default_factory=lambda: datetime.utcnow().replace(tzinfo=timezone.utc),
     )
-    books: List["RentHistory"] = Relationship(back_populates="member")
+    issue_history: List["IssueHistory"] = Relationship(back_populates="member")
