@@ -7,6 +7,7 @@ from flask.cli import with_appcontext
 import click
 from frappe_library.services.custom_commands import create_db_command
 from frappe_library.services.constants import DATABASE_URL
+from flask_cors import CORS
   
 class FrappeAppFactory:
 
@@ -14,6 +15,7 @@ class FrappeAppFactory:
         self._app = Flask(__name__)  
         self._app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL 
         self.app.config['DEBUG'] = True
+        CORS(self.app)
         
     def register_utilities(self): 
         self._app.cli.add_command(create_db_command)  
