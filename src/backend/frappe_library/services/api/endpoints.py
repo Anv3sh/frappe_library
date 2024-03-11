@@ -2,10 +2,10 @@ from frappe_library.services.api.router import test_bp, books_bp, members_bp
 from frappe_library.services.database.models import Book,Member,IssueHistory
 import requests
 from flask import request, Response
-from frappe_library.services.constants import FRAPPE_API, DEFAULT_PAGINATION_OFFSET
+from frappe_library.services.constants import FRAPPE_API, DEFAULT_PAGINATION_OFFSET, DEFAULT_FRAPPE_API_PAGE_OFFSET
 from sqlmodel import Session,select
 from frappe_library.services.database.connections import engine
-from frappe_library.services.api.schema import BookSchema, MemberSchema, IssueBookSchema, ReturnBookSchema, SearchBook
+from frappe_library.services.api.schema import BookSchema, MemberSchema, IssueBookSchema, ReturnBookSchema, SearchBook, ImportBookSchema
 from frappe_library.services.logger import frappe_logger
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError  
@@ -13,7 +13,7 @@ import json
 from frappe_library.services.api.utils import IssueHistoryParser, BooksParser, calculate_member_debt
 from frappe_library.services.custom_json_encoder import CustomEncoder
 from datetime import datetime, timezone
-import traceback
+
 
 @test_bp.route("/")
 def test():
@@ -21,16 +21,32 @@ def test():
 
 @books_bp.route("/import-books/",methods=["POST"])
 def import_books():
-    payload_json = {
-        "title" : request.form['title'],
-        "authors" : request.form['authors'],
-        "isbn" : request.form['isbn'],
-        "publisher" : request.form['publisher'],
-        "page" : request.form['page'],
-    }
     try:
-        resp = requests.get(FRAPPE_API, json=payload_json)
-        book_objects = resp.json().get("message")
+        validated_data = ImportBookSchema(**request.get_json())  
+    except ValidationError as e:
+        frappe_logger.error(e)
+        return Response(e, status=400, mimetype="application/json")
+    
+    
+    try:
+        payload_json = {
+        "title" : validated_data.title,
+        "authors" : validated_data.authors,
+        "publisher" : validated_data.publisher,
+        }
+        number_of_books = validated_data.number_of_books
+        pages = number_of_books//DEFAULT_FRAPPE_API_PAGE_OFFSET
+        remaining = number_of_books%DEFAULT_FRAPPE_API_PAGE_OFFSET
+        book_objects = []
+        for page in range(1,pages+1):
+            payload_json.update({"page":page})
+            resp = requests.get(FRAPPE_API, params={**payload_json})
+            book_objects.extend(resp.json().get("message"))
+        if remaining:
+            payload_json.update({"page":pages+1})
+            resp = requests.get(FRAPPE_API, json=payload_json)
+            if resp:
+                book_objects.extend(resp.json().get("message")[0:remaining])
         for book in book_objects:
             if "  num_pages" in book:
                 book['num_pages'] = book.pop("  num_pages")
@@ -89,7 +105,6 @@ def issue_book_to_member():
         return Response(json.dumps({"detail":"Book Issued successfully."}),status=200,mimetype="application/json")
     except Exception as e:
         frappe_logger.error(f"Exception occurred while issuing book: {e}")
-        print(traceback.print_exc())
         return Response(json.dumps({"detail":"Book was not able to be issued."}),status=400,mimetype="application/json")
 
 @books_bp.route("/issued-books/", methods=["GET"])
@@ -165,7 +180,6 @@ def search_book():
             if validated_data.author:
                 statement = statement.filter(Book.authors.ilike(f"%{validated_data.author}%"))
             book = session.exec(statement).all()
-            print(book)
             book_objs = BooksParser.get_instance_objs(book)
         return Response(json.dumps(book_objs,cls=CustomEncoder),status=200,mimetype="application/json")
     except Exception as e:

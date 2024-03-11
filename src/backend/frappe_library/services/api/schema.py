@@ -4,6 +4,14 @@ from uuid import UUID,uuid4
 from datetime import datetime  
 from decimal import Decimal
 
+
+class ImportBookSchema(BaseModel):
+    title: Optional[str] = None
+    authors: Optional[str] = None
+    publisher: Optional[str] = None
+    number_of_books: Optional[int] = None
+    
+    
 class BookSchema(BaseModel):
     bookID: int
     title: str  
