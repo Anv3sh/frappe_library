@@ -1,5 +1,6 @@
 from frappe_library.services.database.models.base import SQLModelSerializable
 from datetime import datetime, timezone, date
+from decimal import Decimal
 from typing import TYPE_CHECKING, List, Optional
 from uuid import UUID, uuid4
 import sqlalchemy as sa
@@ -16,7 +17,7 @@ class Book(SQLModelSerializable, table=True):
     bookID: int = Field(nullable=False)
     title: str = Field(nullable=False)
     authors: str = Field(nullable=False)
-    average_rating: int = Field(nullable=False)
+    average_rating: Decimal = Field(nullable=False)
     isbn: str = Field(nullable=False)
     isbn13: str = Field(nullable=False)
     language_code: str = Field(nullable=False)  

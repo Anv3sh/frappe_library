@@ -133,6 +133,8 @@ def return_book():
         rent = 0
         with Session(engine) as session:
             issue_history = session.exec(select(IssueHistory).where(IssueHistory.id==validated_data.id)).first()
+            if issue_history.is_returned == True:
+                return Response(json.dumps({"detail":"Book already returned.", "rent":str(rent)}),status=200,mimetype="application/json")
             issue_history.is_returned=True
             book = issue_history.book
             book.is_available=True
@@ -140,7 +142,7 @@ def return_book():
             session.add(issue_history)
             session.add(book)
             session.commit()
-        return Response(json.dumps({"detail":"Book return successfully.", "rent":rent}),status=200,mimetype="application/json")
+        return Response(json.dumps({"detail":"Book return successfully.", "rent":str(rent)}),status=200,mimetype="application/json")
     except Exception as e:
         frappe_logger.error(f"Exception occurred due to: {e}")
         return Response(json.dumps({"detail":"Unable to return book."}), status=400, mimetype="application/json")

@@ -31,5 +31,5 @@ class Member(SQLModelSerializable, table=True):
         issues = session.exec(select(IssueHistory) 
                               .where(IssueHistory.member_id == self.member_id, IssueHistory.is_returned == False)  
                              ).all()  
-        total_debt = sum([(datetime.utcnow().replace(tzinfo=timezone.utc) - issue.issued_at).days * issue.charge_per_day_in_inr for issue in issues])  
+        total_debt = sum([issue.rent for issue in issues])  
         return total_debt

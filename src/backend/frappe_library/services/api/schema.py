@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, EmailStr, validator
 from typing import List, Optional  
 from uuid import UUID,uuid4  
 from datetime import datetime  
-
+from decimal import Decimal
 
 class BookSchema(BaseModel):
     bookID: int
@@ -10,7 +10,7 @@ class BookSchema(BaseModel):
     authors: str  
     isbn: str  
     isbn13: str  
-    average_rating: float  
+    average_rating: Decimal 
     language_code: str  
     num_pages: int  
     ratings_count: int  
@@ -31,7 +31,7 @@ class IssueBookSchema(BaseModel):
     email:EmailStr
     bookID:int
     isbn:str
-    rent:int
+    rent:Decimal
 
 
 class ReturnBookSchema(BaseModel):

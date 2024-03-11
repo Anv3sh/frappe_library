@@ -2,7 +2,7 @@ from frappe_library.services.database.models.base import SQLModelSerializable
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, List, Optional
 from uuid import UUID, uuid4
- 
+from decimal import Decimal
 import sqlalchemy as sa
 
 from sqlmodel import Field, Relationship, SQLModel
@@ -24,4 +24,4 @@ class IssueHistory(SQLModelSerializable,table=True):
         default_factory=lambda: datetime.utcnow().replace(tzinfo=timezone.utc),
     )
     is_returned: bool = Field(default=False)
-    rent: int = Field(nullable=False)
+    rent: Decimal = Field(nullable=False)
