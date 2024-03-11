@@ -18,10 +18,12 @@ class BookSchema(BaseModel):
     publication_date: str  
     publisher: str  
     
+    
 class MemberSchema(BaseModel): 
     first_name: str  
     last_name: str  
     email: EmailStr
+  
   
 class IssueBookSchema(BaseModel):
     first_name:str
@@ -29,15 +31,12 @@ class IssueBookSchema(BaseModel):
     email:EmailStr
     bookID:int
     isbn:str
-    charge_per_day:int
-    return_before: datetime
-    
-    @validator('return_before', pre=True)  
-    def convert_epoch_to_datetime(cls, value):  
-        return datetime.fromtimestamp(value) 
+    rent:int
+
 
 class ReturnBookSchema(BaseModel):
     id:UUID
+    
     
 class SearchBook(BaseModel):
     title: Optional[str] = None

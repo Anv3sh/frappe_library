@@ -1,3 +1,9 @@
+from frappe_library.services.database.models import IssueHistory
+from sqlmodel import Session,select
+from frappe_library.services.database.connections import engine
+from datetime import datetime, timezone
+from uuid import UUID
+
 
 class IssueHistoryParser:
     def get_instance_objs(list_of_instances:list):
@@ -23,3 +29,12 @@ class BooksParser:
             instance_obj.pop('_sa_instance_state', None)  # remove SQLAlchemy's internal attribute  
             instance_objs.append(instance_obj)  
         return instance_objs
+    
+    
+def calculate_member_debt(member_id: UUID):  
+    with Session(engine) as session:  
+        issues = session.exec(select(IssueHistory)  
+                              .where(IssueHistory.member_id == member_id, IssueHistory.is_returned == False)  
+                             ).all()  
+        total_debt = sum([issue.rent for issue in issues])  
+    return total_debt 

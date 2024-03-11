@@ -10,9 +10,10 @@ from frappe_library.services.logger import frappe_logger
 from pydantic import ValidationError
 from sqlalchemy.exc import IntegrityError  
 import json
-from frappe_library.services.api.utils import IssueHistoryParser, BooksParser
+from frappe_library.services.api.utils import IssueHistoryParser, BooksParser, calculate_member_debt
 from frappe_library.services.custom_json_encoder import CustomEncoder
 from datetime import datetime, timezone
+import traceback
 
 @test_bp.route("/")
 def test():
@@ -76,7 +77,9 @@ def issue_book_to_member():
         with Session(engine) as session:
             if ((member := session.exec(select(Member).where(Member.email == validated_data.email)).first()) and 
             (book:= session.exec(select(Book).where(Book.bookID == validated_data.bookID,Book.is_available == True)).first())):
-                issuehistory = IssueHistory(member_id=member.member_id,book_id=book.id,charge_per_day_in_inr=validated_data.charge_per_day, return_before=validated_data.return_before)
+                if member.calculate_debt(session)>=500:
+                    return Response(json.dumps({"detail":"Member debt greater than 500."}),status=400,mimetype="application/json")
+                issuehistory = IssueHistory(member_id=member.member_id,book_id=book.id,rent=validated_data.rent)
                 book.is_available=False
                 session.add(issuehistory)
                 session.add(book)
@@ -86,6 +89,7 @@ def issue_book_to_member():
         return Response(json.dumps({"detail":"Book Issued successfully."}),status=200,mimetype="application/json")
     except Exception as e:
         frappe_logger.error(f"Exception occurred while issuing book: {e}")
+        print(traceback.print_exc())
         return Response(json.dumps({"detail":"Book was not able to be issued."}),status=400,mimetype="application/json")
 
 @books_bp.route("/issued-books/", methods=["GET"])
@@ -130,8 +134,11 @@ def return_book():
         with Session(engine) as session:
             issue_history = session.exec(select(IssueHistory).where(IssueHistory.id==validated_data.id)).first()
             issue_history.is_returned=True
-            rent = (datetime.utcnow().replace(tzinfo=timezone.utc)-issue_history.issued_at).days * issue_history.charge_per_day_in_inr
+            book = issue_history.book
+            book.is_available=True
+            rent = issue_history.rent
             session.add(issue_history)
+            session.add(book)
             session.commit()
         return Response(json.dumps({"detail":"Book return successfully.", "rent":rent}),status=200,mimetype="application/json")
     except Exception as e:

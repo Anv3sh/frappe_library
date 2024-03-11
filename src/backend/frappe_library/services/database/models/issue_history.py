@@ -19,10 +19,9 @@ class IssueHistory(SQLModelSerializable,table=True):
     book_id: UUID = Field(default=None, foreign_key="book.id")
     member: "Member" = Relationship(back_populates="issue_history")  
     book: "Book" = Relationship(back_populates="issue_history")  
-    issued_at: Optional[datetime] = Field(
+    issued_on: Optional[datetime] = Field(
         sa_column=sa.Column(sa.DateTime(timezone=True), nullable=False),
         default_factory=lambda: datetime.utcnow().replace(tzinfo=timezone.utc),
     )
-    return_before: Optional[datetime] = Field(nullable=False)
     is_returned: bool = Field(default=False)
-    charge_per_day_in_inr: int = Field(nullable=False)
+    rent: int = Field(nullable=False)
