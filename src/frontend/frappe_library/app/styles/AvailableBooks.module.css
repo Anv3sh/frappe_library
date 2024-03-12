@@ -1,0 +1,97 @@
+.title{
+    text-align: center;
+    font-size:xx-large;
+    font-family:'Times New Roman', Times, serif;
+    font-weight: 700;
+}
+
+.booksGrid {  
+    display: flex;  
+    flex-wrap: wrap;  
+    justify-content: space-around;  
+    max-width: 1200px; /* Adjust this to suit your needs */  
+    margin: 0 auto; /* This will center the booksGrid */  
+    padding: 0 20px; /* Adjust the padding as needed */  
+  }  
+  
+
+  .card {    
+    flex: 1 0 33.33%;   
+    max-width: 33.33%;   
+    border: 1px solid #ccc;    
+    padding: 10px;    
+    margin: 10px;    
+    box-sizing: border-box;   
+    height: 300px;  
+    width: 200px;  
+    overflow: auto;   
+    border-radius: 10px;  
+    background-color: rgba(200, 200, 200, 0.1);  
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);  /* Adjusted box-shadow property */  
+  }   
+   
+
+  
+.paginationButtons {  
+    display: flex;  
+    justify-content: center;  
+    list-style: none;  
+    padding: 0;  
+    padding-bottom: 20px;
+    margin-top: 20px; /* Add some bottom margin */  
+  }  
+     
+  .paginationButtons li {  
+    margin: 0 10px;  /* Add horizontal margins */  
+  }  
+
+
+  .previousButton a,  
+    .nextButton a {  
+    margin: 0 10px; 
+    text-decoration: none;  
+    color: black; /* Set text color to black */  
+    background-color: white; /* Set background color to white */  
+    padding: 10px; /* Add some padding */  
+    border-radius: 5px; /* Optional: round the corners */  
+    border: 1px solid black; /* Optional: add a border */  
+    }  
+  .paginationDisabled {  
+    pointer-events: none;  
+    cursor: not-allowed;  
+    opacity: 0.6;  
+  }  
+    
+  .paginationActive {  
+    font-weight: bold;  
+  }  
+  
+
+.availableButton {  
+    background-color: green;  
+    color: white;  
+    padding: 10px;  
+    border-radius: 5px;  
+    border: none;  
+    cursor: pointer; 
+    margin-bottom: 10px; 
+  }  
+    
+  .notAvailableButton {  
+    background-color: red; 
+    margin-bottom: 10px; 
+    color: white;  
+    padding: 10px;  
+    border-radius: 5px;  
+    border: none;  
+    cursor: not-allowed;  
+  }  
+
+.detailBox {  
+    border: 1px solid #ccc;  
+    border-radius: 10px;  
+    padding: 10px;  
+    margin-bottom: 10px;  
+    line-height: 1.5;
+}  
+  

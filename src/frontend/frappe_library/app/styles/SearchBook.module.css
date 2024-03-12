@@ -1,0 +1,113 @@
+.title{
+    text-align: center;
+    font-size:xx-large;
+    font-family:'Times New Roman', Times, serif;
+    font-weight: 700;
+}
+
+.booksGrid {  
+    display: flex;  
+    flex-wrap: wrap;  
+    justify-content: space-around;  
+    max-width: 1200px; /* Adjust this to suit your needs */  
+    margin: 0 auto; /* This will center the booksGrid */  
+    padding: 0 20px; /* Adjust the padding as needed */  
+}  
+  
+
+.card {  
+    flex: 1 0 33.33%; /* Will take up 20% of the container's width, creating 5 columns */  
+    border: 1px solid #ccc;  
+    padding: 10px;  
+    margin: 10px;  
+    box-sizing: border-box; /* To include padding and border in the element's total width */  
+    height: 300px; /* Adjust as needed */  
+    width: 200px; /* Adjust as needed */  
+    overflow: auto; 
+    border-radius: 10px;
+    background-color: rgba(200, 200, 200, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
+}  
+
+  
+.paginationButtons {  
+    display: flex;  
+    justify-content: center;  
+    padding: 20px;  
+}  
+  
+.previousButton, .nextButton {  
+    margin: 0 10px;  
+    cursor: pointer;  
+}  
+  
+.paginationDisabled {  
+    opacity: 0.5;  
+    cursor: not-allowed;  
+}  
+  
+.paginationActive {  
+    font-weight: bold;  
+}  
+
+.availableButton {  
+    background-color: green;
+    margin-bottom: 10px;
+    color: white;  
+    padding: 10px;  
+    border-radius: 5px;  
+    border: none;  
+    cursor: pointer;  
+  }  
+    
+  .notAvailableButton {  
+    background-color: red;
+    margin-bottom: 10px;  
+    color: white;  
+    padding: 10px;  
+    border-radius: 5px;  
+    border: none;  
+    cursor: not-allowed;  
+  }  
+
+.detailBox {  
+    border: 1px solid #ccc;  
+    border-radius: 10px;  
+    padding: 10px;  
+    margin-bottom: 10px;  
+    line-height: 1.5;
+}  
+
+.searchBar {    
+    display: flex;    
+    gap: 10px;   
+    margin-top: 30px; /* adjust this to control the gap at the top */  
+    margin-bottom: 20px;   
+    justify-content: center;  
+    height: 50px; /* adjust this to control the height of the search bar */  
+  }    
+
+.searchInput {  
+    border-radius: 10px;  /* adjust this to control the roundness of the edges */  
+    padding-left: 10px; /* adjust this to control the space at the left */    /* adjust this to control the roundness of the edges */  
+}  
+
+.searchInput::placeholder {  
+    text-align: left;  
+} 
+
+.searchButton {  
+    background-color: #4CAF50; /* Green */  
+    border: none;  
+    color: white;  
+    padding: 15px 32px;  
+    text-align: center;  
+    text-decoration: none;  
+    display: inline-block;  
+    font-size: 16px;  
+    border-radius: 10px;  /* adjust this to control the roundness of the edges */  
+    cursor: pointer;  
+  }  
+  
+  
+  

@@ -1,0 +1,35 @@
+.registermember {  
+    display: flex;  
+    flex-direction: column;  
+    align-items: center;  
+    justify-content: center;  
+    height: 100vh; /* vh stands for viewport height */  
+}  
+
+.registermember h1{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: xx-large;
+    font-weight: 700;
+}
+.registermember form {  
+    display: flex;  
+    flex-direction: column;  
+    gap: 20px; /* Increased the space between form inputs */  
+    width: 1000px; /* Increased the width of the form */  
+}  
+  
+.registermember input {  
+    height: 40px; /* Increased the height of the input fields */  
+    padding: 10px; /* Increased the padding inside the input fields */  
+    border-radius: 10px;
+    margin-top: 20px; /* Added rounded edges to the input fields */  
+}  
+  
+.registermember button {  
+    height: 45px; /* Increased the height of the button */  
+    background-color: #4CAF50;  
+    color: white;  
+    border-radius: 10px;
+    margin-top: 20px;
+    width: 200px; /* Added rounded edges to the button */  
+}  
