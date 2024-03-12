@@ -24,12 +24,13 @@ class BookSchema(BaseModel):
     ratings_count: int  
     text_reviews_count: int  
     publication_date: str  
-    publisher: str  
+    publisher: str
+    available_copies: list
     
     
 class MemberSchema(BaseModel): 
-    first_name: str  
-    last_name: str  
+    first_name: str
+    last_name: str
     email: EmailStr
   
   

@@ -2,7 +2,7 @@ from frappe_library.services.api.router import test_bp, books_bp, members_bp
 from frappe_library.services.database.models import Book,Member,IssueHistory
 import requests
 from flask import request, Response
-from frappe_library.services.constants import FRAPPE_API, DEFAULT_PAGINATION_OFFSET, DEFAULT_FRAPPE_API_PAGE_OFFSET
+from frappe_library.services.constants import FRAPPE_API, DEFAULT_PAGINATION_OFFSET, DEFAULT_FRAPPE_API_PAGE_OFFSET, BACKEND_BASE_ROUTE
 from sqlmodel import Session,select
 from frappe_library.services.database.connections import engine
 from frappe_library.services.api.schema import BookSchema, MemberSchema, IssueBookSchema, ReturnBookSchema, SearchBook, ImportBookSchema
@@ -13,21 +13,17 @@ import json
 from frappe_library.services.api.utils import IssueHistoryParser, BooksParser, calculate_member_debt
 from frappe_library.services.custom_json_encoder import CustomEncoder
 from datetime import datetime, timezone
-
-
-@test_bp.route("/")
-def test():
-    return "<p>Hello, World!</p>"
+import math
+from sqlalchemy import func
 
 @books_bp.route("/import-books/",methods=["POST"])
 def import_books():
     try:
         validated_data = ImportBookSchema(**request.get_json())  
     except ValidationError as e:
-        frappe_logger.error(e)
-        return Response(e, status=400, mimetype="application/json")
-    
-    
+        frappe_logger.error(str(e))
+        return Response(str(e), status=400, mimetype="application/json")
+
     try:
         payload_json = {
         "title" : validated_data.title,
@@ -68,8 +64,8 @@ def register_member():
     try:
         validated_member = MemberSchema(**request.get_json())  
     except ValidationError as e:
-        frappe_logger.error(e)
-        return Response(e, status=400, mimetype="application/json")
+        frappe_logger.error(str(e))
+        return Response(json.dumps({"detail":"Wrong email entered!"}), status=400, mimetype="application/json")
     try:
         with Session(engine) as session:
             if session.exec(select(Member).where(Member.email == validated_member.email)).first():
@@ -129,13 +125,27 @@ def available_books():
     try:
         page = request.args.get('page', 1, type=int)
         with Session(engine) as session:
+            total_books_count = session.exec(select(func.count(Book.id)).filter(Book.is_available == True)).one()
+
+            total_pages = math.ceil(total_books_count / DEFAULT_PAGINATION_OFFSET)
+
             stmt = select(Book).where(Book.is_available==True).offset((page - 1) * DEFAULT_PAGINATION_OFFSET).limit(DEFAULT_PAGINATION_OFFSET)  
             available_books = session.exec(stmt).fetchall()  
             available_books_objs = BooksParser.get_instance_objs(available_books) 
-        return Response(json.dumps(available_books_objs,cls=CustomEncoder),status=200,mimetype="application/json")
+            next_page_url = None
+            if page < total_pages:
+                next_page_url = f"{BACKEND_BASE_ROUTE}/books/available-books/?page={page + 1}"
+        response_data = {
+            "data": available_books_objs,
+            "total_pages": total_pages,
+            "current_page":page,
+            "next_page_url": next_page_url,
+        }
+        return Response(json.dumps(response_data, cls=CustomEncoder), status=200, mimetype="application/json")
     except Exception as e:
         frappe_logger.error(f"Exception occurred due to: {e}")
-        return Response(json.dumps({"detail":"Unable to get available books list."}),status=400,mimetype="application/json")
+        return Response(json.dumps({"detail":"Unable to get available books list."}), status=400, mimetype="application/json")
+
 
 @books_bp.route("/return-book/",methods = ["PATCH"])
 def return_book():
