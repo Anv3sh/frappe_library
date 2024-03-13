@@ -26,4 +26,3 @@ def get_db_connection_url():
 
 
 engine = create_engine(get_db_connection_url())
-

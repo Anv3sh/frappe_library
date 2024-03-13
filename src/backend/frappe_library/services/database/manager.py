@@ -1,13 +1,14 @@
+import logging
 from pathlib import Path
 
 from alembic import command
 from alembic.config import Config
+from frappe_library.services.database.models import Book, IssueHistory, Member
 from sqlmodel import Session, SQLModel, create_engine
-import logging
-from frappe_library.services.database.models import Book,Member,IssueHistory
-
 
 logger = logging.getLogger(__name__)
+
+
 class DatabaseManager:
     def __init__(self, database_url: str):
         self.database_url = database_url
@@ -34,7 +35,6 @@ class DatabaseManager:
         with Session(self.engine) as session:
             yield session
 
-
     def create_db_and_tables(self):
         logger.info("Creating database and tables")
         try:
@@ -60,7 +60,7 @@ class DatabaseManager:
                 raise RuntimeError(
                     "Something went wrong creating the database and tables."
                 )
-        
+
         else:
             logger.info("Database and tables created successfully")
         logger.info(inspector.get_table_names())
