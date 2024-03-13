@@ -35,14 +35,3 @@ class BooksParser:
             )  # remove SQLAlchemy's internal attribute
             instance_objs.append(instance_obj)
         return instance_objs
-
-
-def calculate_member_debt(member_id: UUID):
-    with Session(engine) as session:
-        issues = session.exec(
-            select(IssueHistory).where(
-                IssueHistory.member_id == member_id, IssueHistory.is_returned == False
-            )
-        ).all()
-        total_debt = sum([issue.rent for issue in issues])
-    return total_debt
