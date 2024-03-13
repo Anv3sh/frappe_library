@@ -49,15 +49,15 @@ The following endpoints are available in the backend application:
 ## How to Use
 To utilize the application effectively, follow these steps:
 
-Import Books: Utilize the import-books endpoint to import books into the application from the Frappe API. Ensure correct handling of pagination for retrieving large datasets.
+- Import Books: Utilize the import-books endpoint to import books into the application from the Frappe API. Ensure correct handling of pagination for retrieving large datasets.
 
-Manage Members: Register members using the register-member endpoint, providing necessary member details.
+- Manage Members: Register members using the register-member endpoint, providing necessary member details.
 
-Issue and Return Books: Use the issue-book and return-book endpoints to handle book issuances and returns, respectively. Ensure adherence to fee policies for overdue books.
+- Issue and Return Books: Use the issue-book and return-book endpoints to handle book issuances and returns, respectively. Ensure adherence to fee policies for overdue books.
 
-Search for Books: Utilize the search-book endpoint to search for specific books based on title, author, or both.
+- Search for Books: Utilize the search-book endpoint to search for specific books based on title, author, or both.
 
-Retrieve Book Lists: Utilize the issued-books and available-books endpoints to retrieve lists of issued and available books, respectively. Paginate through the results for better navigation.
+- Retrieve Book Lists: Utilize the issued-books and available-books endpoints to retrieve lists of issued and available books, respectively. Paginate through the results for better navigation.
 
 ## Local Setup
 
