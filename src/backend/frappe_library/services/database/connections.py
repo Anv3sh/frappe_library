@@ -9,7 +9,7 @@ def get_db_connection_url():
 
     is_prod_mode = os.getenv("PROD") or ""
 
-    if is_prod_mode == "true":
+    if is_prod_mode == "True":
         username = os.getenv("PROD_DB_USERNAME") or ""
         password = os.getenv("PROD_DB_PASSWORD") or ""
         host_url = os.getenv("PROD_DB_HOST_URL") or ""
