@@ -23,6 +23,10 @@ const AvailableBooks = () => {
     }      
   }, []); // include pageNumber in the useCallback dependencies  
 
+  const handleButtonClick = (book: Book) => {  
+    window.location.href = `/books/issue-book?bookID=${book.bookID}&isbn=${book.isbn}`;  
+  };
+
   useEffect(() => {    
       getAvailableBooks();    
   }, [getAvailableBooks]); // include getAvailableBooks in the useEffect dependencies // add pageNumber to the dependency array  
@@ -36,7 +40,7 @@ const AvailableBooks = () => {
       {books.map((book: Book) => (  
         <div key={book.bookID} className={styles.card}>
           {book.is_available ? 
-          <button className={styles.availableButton}>Available</button> :   
+          <button className={styles.availableButton} onClick={() => handleButtonClick(book)}>Issue Book</button> :   
           <button className={styles.notAvailableButton}>Not Available</button>
           } 
           <h2 className={styles.detailBox}><b>Title: </b>{book.title}</h2>  

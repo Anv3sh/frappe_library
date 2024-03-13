@@ -1,17 +1,17 @@
+'use client'
 import React from 'react'; 
-import RegisterMember from '../../components/RegisterMember';
+import ImportBooks from '../../components/ImportBooks';
 import '../../styles/globals.css';
 import Navbar from '../../components/Navbar';
-
 // import other page components here  
 
 
 
-export default function Register(){  
+export default function ImportBooksPage(){  
   return (  
     <main>
       <Navbar></Navbar>
-      <RegisterMember></RegisterMember>
+      <ImportBooks></ImportBooks>
     </main>
   );
 }  

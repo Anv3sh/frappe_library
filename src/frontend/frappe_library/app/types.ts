@@ -14,3 +14,28 @@ export type Book = {
     publisher: string;    
     added_at: string;    
   }; 
+
+  export type IssueHistory = {  
+    book_id: string;  
+    id: string;  
+    is_returned: boolean;  
+    member_id: string;  
+    issued_on: string;  
+    rent: string;  
+  }; 
+    
+export type Member = {  
+    last_name: string;  
+    first_name: string;  
+    created_at: string;  
+    member_id: string;  
+    email: string;  
+    updated_at: string;  
+  };
+    
+export type IssuedBook = {  
+    issue_history: IssueHistory;  
+    book: Book;  
+    member: Member;  
+  };
+  

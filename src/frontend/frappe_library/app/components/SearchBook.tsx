@@ -40,6 +40,7 @@ const SearchBook = () => {
   
   return ( 
     <div key={books.length}> 
+      <h1 className={styles.title}>Search Books</h1>
         <div className={styles.searchBar}>
       <input className={styles.searchInput} type="text" value={title} onChange={e => setTitle(e.target.value)} onKeyDown={handleKeyDown} placeholder="Search by title" />    
       <input className={styles.searchInput} type="text" value={author} onChange={e => setAuthor(e.target.value)} onKeyDown={handleKeyDown} placeholder="Search by author" />    
