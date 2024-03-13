@@ -9,7 +9,7 @@ class ImportBookSchema(BaseModel):
     title: Optional[str] = None
     authors: Optional[str] = None
     publisher: Optional[str] = None
-    number_of_books: Optional[int] = None
+    number_of_books: Optional[int] = Field(default=20)
     
     
 class BookSchema(BaseModel):
@@ -25,7 +25,6 @@ class BookSchema(BaseModel):
     text_reviews_count: int  
     publication_date: str  
     publisher: str
-    available_copies: list
     
     
 class MemberSchema(BaseModel): 

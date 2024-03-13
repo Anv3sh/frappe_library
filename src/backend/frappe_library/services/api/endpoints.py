@@ -40,7 +40,7 @@ def import_books():
             book_objects.extend(resp.json().get("message"))
         if remaining:
             payload_json.update({"page":pages+1})
-            resp = requests.get(FRAPPE_API, json=payload_json)
+            resp = requests.get(FRAPPE_API, params={**payload_json})
             if resp:
                 book_objects.extend(resp.json().get("message")[0:remaining])
         for book in book_objects:
@@ -103,22 +103,39 @@ def issue_book_to_member():
         frappe_logger.error(f"Exception occurred while issuing book: {e}")
         return Response(json.dumps({"detail":"Book was not able to be issued."}),status=400,mimetype="application/json")
 
-@books_bp.route("/issued-books/", methods=["GET"])
-def issue_history():
-    try:
-        page = request.args.get('page', 1, type=int)
-        with Session(engine) as session:
-            stmt = (select(IssueHistory, Book, Member)  
-                    .join(Book, Book.id == IssueHistory.book_id)  
-                    .join(Member, Member.member_id == IssueHistory.member_id)  
-                    .offset((page - 1) * DEFAULT_PAGINATION_OFFSET)  
-                    .limit(DEFAULT_PAGINATION_OFFSET))  
-            issued_books = session.exec(stmt).fetchall()  
-            issued_books_objs = IssueHistoryParser.get_instance_objs(issued_books)
-        return Response(json.dumps(issued_books_objs,cls=CustomEncoder),status=200,mimetype="application/json")
-    except Exception as e:
-        frappe_logger.error(f"Exception occurred due to: {e}")
-        return Response(json.dumps({"detail":"Unable to get issued books list."}),status=400,mimetype="application/json")
+@books_bp.route("/issued-books/", methods=["GET"])  
+def issue_history():  
+    try:  
+        page = request.args.get('page', 1, type=int)  
+        with Session(engine) as session:  
+            total_books_count = session.exec(select(func.count(IssueHistory.id).filter(IssueHistory.is_returned == False))).one()  
+  
+            total_pages = math.ceil(total_books_count / DEFAULT_PAGINATION_OFFSET)  
+  
+            stmt = (select(IssueHistory, Book, Member)    
+                    .join(Book, Book.id == IssueHistory.book_id)    
+                    .join(Member, Member.member_id == IssueHistory.member_id)
+                    .where(IssueHistory.is_returned == False)    
+                    .offset((page - 1) * DEFAULT_PAGINATION_OFFSET)    
+                    .limit(DEFAULT_PAGINATION_OFFSET))    
+            issued_books = session.exec(stmt).fetchall()    
+            issued_books_objs = IssueHistoryParser.get_instance_objs(issued_books)  
+  
+            next_page_url = None  
+            if page < total_pages:  
+                next_page_url = f"{BACKEND_BASE_ROUTE}/books/issued-books/?page={page + 1}"  
+  
+        response_data = {  
+            "data": issued_books_objs,  
+            "total_pages": total_pages,  
+            "current_page": page,  
+            "next_page_url": next_page_url,  
+        }  
+        return Response(json.dumps(response_data, cls=CustomEncoder), status=200, mimetype="application/json")  
+    except Exception as e:  
+        frappe_logger.error(f"Exception occurred due to: {e}")  
+        return Response(json.dumps({"detail":"Unable to get issued books list."}), status=400, mimetype="application/json")  
+
 
 @books_bp.route("/available-books/", methods=["GET"])
 def available_books():
