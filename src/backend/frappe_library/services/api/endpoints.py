@@ -17,7 +17,6 @@ from frappe_library.services.api.schema import (
 from frappe_library.services.api.utils import (
     BooksParser,
     IssueHistoryParser,
-    calculate_member_debt,
 )
 from frappe_library.services.constants import (
     BACKEND_BASE_ROUTE,
