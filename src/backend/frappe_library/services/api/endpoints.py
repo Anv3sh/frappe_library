@@ -17,6 +17,7 @@ from frappe_library.services.api.schema import (
 from frappe_library.services.api.utils import (
     BooksParser,
     IssueHistoryParser,
+    MemberParser,
 )
 from frappe_library.services.constants import (
     BACKEND_BASE_ROUTE,
@@ -145,6 +146,7 @@ def issue_book_to_member():
                 ).first()
             ):
                 if member.calculate_debt(session) >= 500:
+                    member.on_debt = True
                     return Response(
                         json.dumps({"detail": "Member debt greater than 500."}),
                         status=400,
@@ -347,6 +349,76 @@ def search_book():
         frappe_logger.error(f"Exception occurred due to: {e}")
         return Response(
             json.dumps({"detail": "Unable to search book."}),
+            status=400,
+            mimetype="application/json",
+        )
+
+
+@members_bp.route("/", methods=["GET"])
+def list_members():
+    try:
+        page = request.args.get("page", 1, type=int)
+        with Session(engine) as session:
+            total_members_count = session.exec(
+                select(func.count(Member.member_id))
+            ).one()
+
+            total_pages = math.ceil(total_members_count / DEFAULT_PAGINATION_OFFSET)
+
+            stmt = (
+                select(Member)
+                .offset((page - 1) * DEFAULT_PAGINATION_OFFSET)
+                .limit(DEFAULT_PAGINATION_OFFSET)
+            )
+            members = session.exec(stmt).fetchall()
+            member_objs = MemberParser.get_instance_objs(members)
+            next_page_url = None
+            if page < total_pages:
+                next_page_url = f"{BACKEND_BASE_ROUTE}/members/?page={page + 1}"
+        response_data = {
+            "data": member_objs,
+            "total_pages": total_pages,
+            "current_page": page,
+            "next_page_url": next_page_url,
+        }
+        return Response(
+            json.dumps(response_data, cls=CustomEncoder),
+            status=200,
+            mimetype="application/json",
+        )
+    except Exception as e:
+        frappe_logger.error(f"Exception occurred due to: {e}")
+        return Response(
+            json.dumps({"detail": "Unable to get members list."}),
+            status=400,
+            mimetype="application/json",
+        )
+
+
+@members_bp.route("/members/<int:member_id>/", methods=["DELETE"])
+def delete_member(member_id):
+    try:
+        with Session(engine) as session:
+            member = session.exec(
+                select(Member).where(Member.member_id == member_id)
+            ).first()
+            if member is None:
+                return Response(
+                    json.dumps({"detail": f"No member with id {member_id}."}),
+                    status=400,
+                    mimetype="application/json",
+                )
+            session.delete(member)
+            session.commit()
+        return Response(
+            json.dumps({"detail": f"Deleted member"}),
+            status=200,
+            mimetype="application/json",
+        )
+    except Exception as e:
+        frappe_logger.error(f"Exception occurred due to: {e}")
+        return Response(
+            json.dumps({"detail": "Unable to delete member."}),
             status=400,
             mimetype="application/json",
         )

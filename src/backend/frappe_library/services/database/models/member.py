@@ -27,6 +27,7 @@ class Member(SQLModelSerializable, table=True):
         default_factory=lambda: datetime.utcnow().replace(tzinfo=timezone.utc),
     )
     issue_history: List["IssueHistory"] = Relationship(back_populates="member")
+    on_debt: bool = Field(default=False)
 
     def calculate_debt(self, session):
         from frappe_library.services.database.models.issue_history import IssueHistory

@@ -35,3 +35,15 @@ class BooksParser:
             )  # remove SQLAlchemy's internal attribute
             instance_objs.append(instance_obj)
         return instance_objs
+
+
+class MemberParser:
+    def get_instance_objs(list_of_instances: list):
+        instance_objs = []
+        for instance in list_of_instances:
+            instance_obj = instance.__dict__
+            instance_obj.pop(
+                "_sa_instance_state", None
+            )  # remove SQLAlchemy's internal attribute
+            instance_objs.append(instance_obj)
+        return instance_objs
