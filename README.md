@@ -80,3 +80,13 @@ source .venv/bin/activate
 yarn dev
 ```
 2. You can now access the frontend on `localhost:3000`.
+
+## Screenshots:
+
+1. Available books listing section.
+2. Pagination.
+3. Issue Book section.
+4. Member registration section.
+5. Issued books listing section.
+6. Book return section.
+7. Navbar dropdowns.
