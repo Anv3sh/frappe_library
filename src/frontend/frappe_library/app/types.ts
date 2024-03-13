@@ -30,7 +30,8 @@ export type Member = {
     created_at: string;  
     member_id: string;  
     email: string;  
-    updated_at: string;  
+    updated_at: string;
+    on_debt: boolean;
   };
     
 export type IssuedBook = {  

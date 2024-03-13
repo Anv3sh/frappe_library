@@ -11,8 +11,9 @@ const bookItems = [
   { href: "/books/import-books", title: "Import Books" }  
 ];    
   
-const memberItems = [  
-  { href: "/member/register-member", title: "Register Member" }  
+const memberItems = [
+  { href: "/members", title: "Members List" },
+  { href: "/members/register-member", title: "Register Member" }  
 ];    
   
 export default function Navbar() {      

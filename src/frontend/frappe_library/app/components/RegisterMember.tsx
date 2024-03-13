@@ -28,7 +28,7 @@ const RegisterMember = () => {
         }  
           
         try {    
-            const response = await axios.post('http://localhost:8080/frappe_library/api/v1/member/register-member/', {    
+            const response = await axios.post('http://localhost:8080/frappe_library/api/v1/members/register-member/', {    
                 first_name: firstName,    
                 last_name: lastName,    
                 email: email    
