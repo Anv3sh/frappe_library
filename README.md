@@ -28,21 +28,21 @@ Librarians can perform the following operations:
 - Import Books: Import retrieved book data into the application, creating corresponding book records.
 
 ## Endpoints
-The following endpoints are available in the application:
+The following endpoints are available in the backend application:
 
-- Import Books: POST /import-books/
+- Import Books: `POST /import-books/`
 
-- Register Member: POST /register-member/
+- Register Member: `POST /register-member/`
 
-- Issue Book to Member: POST /issue-book/
+- Issue Book to Member: `POST /issue-book/`
 
-- Get Issued Books: GET /issued-books/
+- Get Issued Books: `GET /issued-books/`
 
-- Get Available Books: GET /available-books/
+- Get Available Books: `GET /available-books/`
 
-- Return Book: PATCH /return-book/
+- Return Book: `PATCH /return-book/`
 
-- Search Book: GET /search-book/
+- Search Book: `GET /search-book/`
 
 - Each endpoint serves specific functionalities, facilitating seamless interaction with the library management system.
 
