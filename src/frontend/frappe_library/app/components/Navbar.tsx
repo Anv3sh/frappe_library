@@ -31,10 +31,12 @@ export default function Navbar() {
   
   return (      
     <nav className="flex items-center justify-between p-8 bg-blue-500 shadow-2xl">    
-      <div className="h-8 w-auto mb-5">      
-        <Image src="/frappe_library.png" alt="logo"  width={64} height={32} layout="fixed"/>      
+      <div className="h-8 w-auto mb-5"> 
+      <Link href="/">   
+        <Image src="/frappe_library.png" alt="logo"  width={64} height={32} layout="fixed"/>
+        </Link>        
       </div>    
-      <ul className="flex space-x-4 justify-center flex-grow">      
+      <ul className="flex space-x-4 justify-center flex-grow items-center">      
         <li className="group relative">  
           <button onClick={toggleBookOpen} className="text-white hover:text-blue-200 text-lg cursor-pointer flex items-center">  
             Books {bookOpen ? <span>&#9650;</span> : <span>&#9660;</span>}  

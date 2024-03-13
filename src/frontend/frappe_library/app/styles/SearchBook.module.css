@@ -90,7 +90,8 @@
 
 .searchInput {  
     border-radius: 10px;  /* adjust this to control the roundness of the edges */  
-    padding-left: 10px; /* adjust this to control the space at the left */    /* adjust this to control the roundness of the edges */  
+    padding-left: 10px;
+    color: black; /* adjust this to control the space at the left */    /* adjust this to control the roundness of the edges */  
 }  
 
 .searchInput::placeholder {  

@@ -14,26 +14,39 @@ const RegisterMember = () => {
     const [message, setMessage] = useState("");
 
     const registerMember = async () => {  
-        try {  
-            const response = await axios.post('http://localhost:8080/frappe_library/api/v1/member/register-member/', {  
-                first_name: firstName,  
-                last_name: lastName,  
-                email: email  
-            });  
-  
-            if (response.status === 200) {  
-                setMessage(response.data.detail);  
-            }  
-        } catch (error: unknown) {  
-            if (axios.isAxiosError(error)) {  
-                const serverError = error as AxiosError<ErrorResponse>;  
-                if (serverError.response) {  
-                    setMessage(serverError.response.data.detail);  
-                }  
-            } else {  
-                setMessage("Registration failed. Please try again.");  
-            }  
+        if (!firstName) {  
+            setMessage("First Name is required!");  
+            return;  
         }  
+        if (!lastName) {  
+            setMessage("Last Name is required!");  
+            return;  
+        }  
+        if (!email) {  
+            setMessage("Email is required!");  
+            return;  
+        }  
+          
+        try {    
+            const response = await axios.post('http://localhost:8080/frappe_library/api/v1/member/register-member/', {    
+                first_name: firstName,    
+                last_name: lastName,    
+                email: email    
+            });    
+          
+            if (response.status === 200) {    
+                setMessage(response.data.detail);    
+            }    
+        } catch (error: unknown) {    
+            if (axios.isAxiosError(error)) {    
+                const serverError = error as AxiosError<ErrorResponse>;    
+                if (serverError.response) {    
+                    setMessage(serverError.response.data.detail);    
+                }    
+            } else {    
+                setMessage("Registration failed. Please try again.");    
+            }    
+        }    
     };   
   
     return (  
@@ -60,7 +73,7 @@ const RegisterMember = () => {
             />  
   
             <button onClick={registerMember}>Register</button>  
-            {message && <p>{message}</p>}
+            {message && <div className={styles.message}>{message}</div>}
         </div>  
     );  
 };  

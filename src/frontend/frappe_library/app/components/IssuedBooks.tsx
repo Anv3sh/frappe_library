@@ -52,7 +52,12 @@ const IssuedBooks = () => {
           <button className={styles.returnButton} onClick={() => handleReturnClick(issue.issue_history.id)}>Return</button>
             <h2 className={styles.detailBox}><b>Title: </b>{issue.book.title}</h2> 
               <p className={styles.detailBox}><b>Issued to: </b>{issue.member.first_name} {issue.member.last_name}</p>  
-              <p className={styles.detailBox}><b>Issue Date: </b>{issue.issue_history.issued_on}</p>    
+              <p className={styles.detailBox}><b>Issue Date: </b>
+              {new Date(issue.issue_history.issued_on).toLocaleDateString("en-US", {  
+              year: "numeric",  
+              month: "long",  
+              day: "numeric",  
+            })}</p>    
               <p className={styles.detailBox}><b>Rent: </b>{issue.issue_history.rent}</p>   
           </div>  
         ))}  

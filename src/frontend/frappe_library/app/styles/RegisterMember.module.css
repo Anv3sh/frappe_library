@@ -23,7 +23,8 @@
     height: 40px; /* Increased the height of the input fields */  
     padding: 10px; /* Increased the padding inside the input fields */  
     border-radius: 10px;
-    margin-top: 20px; /* Added rounded edges to the input fields */  
+    margin-top: 20px;
+    color:black /* Added rounded edges to the input fields */  
 }  
   
 .registermember button {  
@@ -34,3 +35,11 @@
     margin-top: 20px;
     width: 200px; /* Added rounded edges to the button */  
 }  
+
+.message {  
+    margin-top: 20px;  
+    padding: 10px;  
+    border-radius: 5px;  
+    color: white;  
+    background-color: orangered;  
+  }  

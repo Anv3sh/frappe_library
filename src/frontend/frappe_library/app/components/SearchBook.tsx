@@ -37,6 +37,10 @@ const SearchBook = () => {
       handleSearchClick();  
     }  
   }
+
+  const handleButtonClick = (book: Book) => {  
+    window.location.href = `/books/issue-book?bookID=${book.bookID}&isbn=${book.isbn}`;  
+  };
   
   return ( 
     <div key={books.length}> 
@@ -49,10 +53,10 @@ const SearchBook = () => {
       <div className={styles.booksGrid}> 
       {books.map((book: Book) => (    
         <div key={book.bookID} className={styles.card}>
-            {book.is_available ?   
-            <button className={styles.availableButton}>Available</button> :     
-            <button className={styles.notAvailableButton}>Not Available</button>  
-            }  
+            {book.is_available ? 
+          <button className={styles.availableButton} onClick={() => handleButtonClick(book)}>Issue Book</button> :   
+          <button className={styles.notAvailableButton}>Not Available</button>
+          }
           <h2 className={styles.detailBox}><b>Title: </b>{book.title}</h2>    
           <p className={styles.detailBox}><b>Authors: </b>{book.authors}</p>    
           <p className={styles.detailBox}><b>Ratings Count: </b>{book.ratings_count}</p>    
