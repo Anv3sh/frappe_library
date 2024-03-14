@@ -147,6 +147,8 @@ def issue_book_to_member():
             ):
                 if member.calculate_debt(session) >= 500:
                     member.on_debt = True
+                    session.add(member)
+                    session.commit()
                     return Response(
                         json.dumps({"detail": "Member debt greater than 500."}),
                         status=400,
@@ -298,10 +300,14 @@ def return_book():
                 )
             issue_history.is_returned = True
             book = issue_history.book
+            member = issue_history.member
             book.is_available = True
             rent = issue_history.rent
+            if member.calculate_debt(session) < 500:
+                member.on_debt = False
             session.add(issue_history)
             session.add(book)
+            session.add(member)
             session.commit()
         return Response(
             json.dumps({"detail": "Book return successfully.", "rent": str(rent)}),
