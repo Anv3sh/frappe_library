@@ -2,7 +2,7 @@ import json
 import math
 import os
 from datetime import datetime, timezone
-
+from uuid import UUID
 import requests
 from flask import Response, request
 from frappe_library.services.api.router import books_bp, members_bp, test_bp
@@ -395,7 +395,7 @@ def list_members():
         )
 
 
-@members_bp.route("/members/<int:member_id>/", methods=["DELETE"])
+@members_bp.route("/<uuid:member_id>/", methods=["DELETE"])
 def delete_member(member_id):
     try:
         with Session(engine) as session:
@@ -408,10 +408,30 @@ def delete_member(member_id):
                     status=400,
                     mimetype="application/json",
                 )
+
+            # Select all IssueHistory related to the member
+            issue_histories = session.exec(
+                select(IssueHistory).where(IssueHistory.member_id == member_id)
+            ).all()
+
+            # For each IssueHistory, set the corresponding book as available
+            for issue_history in issue_histories:
+                book = session.exec(
+                    select(Book).where(Book.id == issue_history.book_id)
+                ).first()
+                if book:
+                    book.is_available = True
+                    session.add(book)
+
+                # Delete the IssueHistory
+                session.delete(issue_history)
+
+            # Delete the member
             session.delete(member)
             session.commit()
+
         return Response(
-            json.dumps({"detail": f"Deleted member"}),
+            json.dumps({"detail": f"Deleted member and related issue histories"}),
             status=200,
             mimetype="application/json",
         )
