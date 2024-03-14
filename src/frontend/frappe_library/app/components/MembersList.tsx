@@ -30,7 +30,21 @@ const MembersList = () => {
     const changePage = ({ selected }: { selected: number }) => {  
         getMembers(selected + 1);  
     };  
-  
+    
+    const deleteMember = async (memberId: string) => {    
+        // Ask for confirmation before deleting  
+        if (!window.confirm('Are you sure you want to delete this member?')) {  
+            return;  
+        }  
+        try {    
+            await api.delete(`/members/${memberId}/`);    
+            getMembers();  // Refresh the members list after deleting    
+        } catch (error) {    
+            console.error('Error while deleting member:', error);    
+        }    
+    };   
+    
+
     const displayMembers = (  
         <div className={styles.membersGrid}>  
             {members.map((member: Member) => (  
@@ -42,7 +56,8 @@ const MembersList = () => {
                     <button className={styles.onDebtButton}>Member Debt {'>'} 500</button> :   
                     <button className={styles.notOnDebtButton}>Member Debt {'<'} 500</button>
                     }
-                </div>  
+                    <button className={styles.deleteButton} onClick={() => deleteMember(member.member_id)}>Delete Member</button>  
+                </div>
             ))}  
         </div>  
     );  
