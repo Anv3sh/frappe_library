@@ -235,50 +235,6 @@ def issue_history():
         )
 
 
-@books_bp.route("/available-books/", methods=["GET"])
-def available_books():
-    try:
-        page = request.args.get("page", 1, type=int)
-        with Session(engine) as session:
-            total_books_count = session.exec(
-                select(func.count(Book.id)).filter(Book.is_available == True)
-            ).one()
-
-            total_pages = math.ceil(total_books_count / DEFAULT_PAGINATION_OFFSET)
-
-            stmt = (
-                select(Book)
-                .where(Book.is_available == True)
-                .offset((page - 1) * DEFAULT_PAGINATION_OFFSET)
-                .limit(DEFAULT_PAGINATION_OFFSET)
-            )
-            available_books = session.exec(stmt).fetchall()
-            available_books_objs = BooksParser.get_instance_objs(available_books)
-            next_page_url = None
-            if page < total_pages:
-                next_page_url = (
-                    f"{BACKEND_BASE_ROUTE}/books/available-books/?page={page + 1}"
-                )
-        response_data = {
-            "data": available_books_objs,
-            "total_pages": total_pages,
-            "current_page": page,
-            "next_page_url": next_page_url,
-        }
-        return Response(
-            json.dumps(response_data, cls=CustomEncoder),
-            status=200,
-            mimetype="application/json",
-        )
-    except Exception as e:
-        frappe_logger.error(f"Exception occurred due to: {e}")
-        return Response(
-            json.dumps({"detail": "Unable to get available books list."}),
-            status=400,
-            mimetype="application/json",
-        )
-
-
 @books_bp.route("/return-book/", methods=["PATCH"])
 def return_book():
     try:
@@ -328,6 +284,7 @@ def search_book():
     try:
         title = request.args.get("title")
         author = request.args.get("author")
+        page = request.args.get("page", 1, type=int)
         validated_data = SearchBook(title=title, author=author)
     except ValidationError as e:
         frappe_logger.error(e)
@@ -336,18 +293,43 @@ def search_book():
     try:
         with Session(engine) as session:
             statement = select(Book)
+            total_books_count_statement = select(func.count(Book.id))
             if validated_data.title:
                 statement = statement.filter(
+                    Book.title.ilike(f"%{validated_data.title}%")
+                )
+                total_books_count_statement = total_books_count_statement.filter(
                     Book.title.ilike(f"%{validated_data.title}%")
                 )
             if validated_data.author:
                 statement = statement.filter(
                     Book.authors.ilike(f"%{validated_data.author}%")
                 )
-            book = session.exec(statement).all()
-            book_objs = BooksParser.get_instance_objs(book)
+                total_books_count_statement = total_books_count_statement.filter(
+                    Book.authors.ilike(f"%{validated_data.author}%")
+                )
+            total_books_count = session.exec(total_books_count_statement).one()
+            total_pages = math.ceil(total_books_count / DEFAULT_PAGINATION_OFFSET)
+
+            statement = statement.offset((page - 1) * DEFAULT_PAGINATION_OFFSET).limit(
+                DEFAULT_PAGINATION_OFFSET
+            )
+
+            books = session.exec(statement).all()
+            book_objs = BooksParser.get_instance_objs(books)
+
+            next_page_url = None
+            if page < total_pages:
+                next_page_url = f"{BACKEND_BASE_ROUTE}/books/search-book/?page={page + 1}&title={title}&author={author}"
+
+        response_data = {
+            "data": book_objs,
+            "total_pages": total_pages,
+            "current_page": page,
+            "next_page_url": next_page_url,
+        }
         return Response(
-            json.dumps(book_objs, cls=CustomEncoder),
+            json.dumps(response_data, cls=CustomEncoder),
             status=200,
             mimetype="application/json",
         )
