@@ -1,32 +1,37 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';    
+import React, { useState, useEffect, useRef, useCallback} from 'react';    
 import axios from 'axios';    
 import { Book } from '../types';  
 import styles from '../styles/SearchBook.module.css'  
-
+import ReactPaginate from 'react-paginate'; 
 
 
 const SearchBook = () => {    
   const [title, setTitle] = useState('');    
   const [author, setAuthor] = useState('');    
   const [books, setBooks] = useState<Book[]>([]);    
-  const [searchTerm, setSearchTerm] = useState<{title: string, author: string} | null>(null);  
+  const [searchTerm, setSearchTerm] = useState<{title: string, author: string}>({title: '', author: ''});  
+  const [currentPage, setCurrentPage] = useState(0);    
+  const [totalPages, setTotalPages] = useState(0); 
 
 
-  useEffect(() => {    
-    const fetchData = async () => {    
-      try {    
-        const result = await axios.get(`http://localhost:8080/frappe_library/api/v1/books/search-book/?title=${searchTerm?.title}&author=${searchTerm?.author}`);  
-        setBooks(result.data);    
-      } catch (error) {    
-        console.error('Error fetching data', error);    
-      }    
-    };    
+  const fetchBooks = useCallback(async (page = 1) => {        
+    try {        
+      const result = await axios.get(`http://localhost:8080/frappe_library/api/v1/books/search-book/?title=${searchTerm.title}&author=${searchTerm.author}&page=${page}`);      
+      setBooks(result.data.data);    
+      setTotalPages(result.data.total_pages);  
+      setCurrentPage(result.data.current_page);  
+    } catch (error) {        
+      console.error('Error fetching data', error);        
+    }        
+  }, [searchTerm]); // Adding searchTerm as a dependency  
+  
+
+  useEffect(() => {        
+    fetchBooks();       
+  }, [fetchBooks]);
+      
     
-    if (searchTerm) { // only fetch data if searchTerm is not null  
-        fetchData();      
-      }  
-    }, [searchTerm]);   
     
   const handleSearchClick = () => {  
     setSearchTerm({title, author});  
@@ -42,6 +47,10 @@ const SearchBook = () => {
     window.location.href = `/books/issue-book?bookID=${book.bookID}&isbn=${book.isbn}`;  
   };
   
+  const changePage = ({ selected }: { selected: number }) => {        
+    fetchBooks(selected + 1);    
+  };
+
   return ( 
     <div key={books.length}> 
       <h1 className={styles.title}>Search Books</h1>
@@ -67,7 +76,18 @@ const SearchBook = () => {
           
         </div>    
       ))}  
-    </div>  
+    </div>
+    <ReactPaginate       
+            previousLabel={"Previous"}      
+            nextLabel={"Next"}      
+            pageCount={totalPages}      
+            onPageChange={changePage}      
+            containerClassName={styles.paginationButtons}      
+            previousClassName={styles.previousButton}      
+            nextClassName={styles.nextButton}      
+            disabledClassName={styles.paginationDisabled}      
+            activeClassName={styles.paginationActive}      
+      />    
     </div>   
   );    
 };    

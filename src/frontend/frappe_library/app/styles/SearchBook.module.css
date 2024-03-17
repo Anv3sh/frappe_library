@@ -10,46 +10,60 @@
     display: flex;  
     flex-wrap: wrap;  
     justify-content: space-around;  
-    max-width: 1200px; /* Adjust this to suit your needs */  
-    margin: 0 auto; /* This will center the booksGrid */  
-    padding: 0 20px; /* Adjust the padding as needed */  
+    max-width: 1200px;  
+    margin: 0 auto;  
+    padding: 0 20px;  
 }  
   
 
 .card {  
-    flex: 1 0 33.33%; /* Will take up 20% of the container's width, creating 5 columns */  
+    flex: 1 0 33.33%;
+    max-width: 33.33%;
     border: 1px solid #ccc;  
     padding: 10px;  
     margin: 10px;  
-    box-sizing: border-box; /* To include padding and border in the element's total width */  
-    height: 300px; /* Adjust as needed */  
-    width: 200px; /* Adjust as needed */  
+    box-sizing: border-box;  
+    height: 300px; 
+    width: 200px;  
     overflow: auto; 
     border-radius: 10px;
     background-color: rgba(200, 200, 200, 0.1);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
 }  
 
-  
 .paginationButtons {  
     display: flex;  
     justify-content: center;  
-    padding: 20px;  
-}  
-  
-.previousButton, .nextButton {  
-    margin: 0 10px;  
-    cursor: pointer;  
-}  
-  
-.paginationDisabled {  
-    opacity: 0.5;  
+    list-style: none;  
+    padding: 0;  
+    padding-bottom: 20px;
+    margin-top: 20px; /* Add some bottom margin */  
+  }  
+     
+  .paginationButtons li {  
+    margin: 0 10px;  /* Add horizontal margins */  
+  }  
+
+
+  .previousButton a,  
+    .nextButton a {  
+    margin: 0 10px; 
+    text-decoration: none;  
+    color: black; /* Set text color to black */  
+    background-color: white; /* Set background color to white */  
+    padding: 10px; /* Add some padding */  
+    border-radius: 5px; /* Optional: round the corners */  
+    border: 1px solid black; /* Optional: add a border */  
+    }  
+  .paginationDisabled {  
+    pointer-events: none;  
     cursor: not-allowed;  
-}  
-  
-.paginationActive {  
+    opacity: 0.6;  
+  }  
+    
+  .paginationActive {  
     font-weight: bold;  
-}  
+  }   
 
 .availableButton {  
     background-color: green;
@@ -82,16 +96,16 @@
 .searchBar {    
     display: flex;    
     gap: 10px;   
-    margin-top: 30px; /* adjust this to control the gap at the top */  
+    margin-top: 30px;  
     margin-bottom: 20px;   
     justify-content: center;  
-    height: 50px; /* adjust this to control the height of the search bar */  
+    height: 50px;  
   }    
 
 .searchInput {  
-    border-radius: 10px;  /* adjust this to control the roundness of the edges */  
+    border-radius: 10px;  
     padding-left: 10px;
-    color: black; /* adjust this to control the space at the left */    /* adjust this to control the roundness of the edges */  
+    color: black; 
 }  
 
 .searchInput::placeholder {  
@@ -99,7 +113,7 @@
 } 
 
 .searchButton {  
-    background-color: #4CAF50; /* Green */  
+    background-color: #4CAF50;  
     border: none;  
     color: white;  
     padding: 15px 32px;  
@@ -107,7 +121,7 @@
     text-decoration: none;  
     display: inline-block;  
     font-size: 16px;  
-    border-radius: 10px;  /* adjust this to control the roundness of the edges */  
+    border-radius: 10px;  
     cursor: pointer;  
   }  
   

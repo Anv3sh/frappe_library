@@ -3,9 +3,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';      
 import Image from 'next/image';     
   
-const bookItems = [    
-  { href: "/books", title: "Available Books" },    
-  { href: "/books/search-book", title: "Search Books" },      
+const bookItems = [        
+  { href: "/books", title: "Search Books" },      
   { href: "/books/issue-book", title: "Issue Book" },    
   { href: "/books/issued-books", title: "Issued Books" },    
   { href: "/books/import-books", title: "Import Books" }    

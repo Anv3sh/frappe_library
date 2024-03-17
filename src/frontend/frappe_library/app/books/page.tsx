@@ -1,16 +1,16 @@
 import React from 'react'; 
-import AvailableBooks from '../components/AvailableBooks';
+import SearchBook from '../components/SearchBook';
 import '../styles/globals.css';
 import Navbar from '../components/Navbar';
 // import other page components here  
 
 
 
-export default function Books(){  
+export default function SearchBooksPage(){  
   return (  
     <main>
       <Navbar></Navbar>
-      <AvailableBooks></AvailableBooks>
+      <SearchBook></SearchBook>
     </main>
   );
 }  
