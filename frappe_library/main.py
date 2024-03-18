@@ -27,8 +27,6 @@ class FrappeAppFactory:
 frappe_app_factory = FrappeAppFactory()
 frappe_app_factory.register_utilities()
 app = frappe_app_factory.app
-for rule in app.url_map.iter_rules():
-    print(rule)
 
 if __name__ == "__main__":
     app.run(debug=True)
