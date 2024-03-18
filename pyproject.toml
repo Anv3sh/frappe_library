@@ -7,7 +7,7 @@ maintainers = [
     "Anvesh Mishra <anveshmishra0508@gmail.com>",
 ]
 repository = "https://github.com/Anv3sh/frappe_library"
-readme = "./README.md"
+readme = "README.md"
 keywords = ["library","system"]
 packages = [{ include = "frappe_library", from = "./" }]
 include = ["frappe_library/*", "frappe_library/**/*"] 
