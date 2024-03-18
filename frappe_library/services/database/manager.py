@@ -13,8 +13,8 @@ class DatabaseManager:
     def __init__(self, database_url: str):
         self.database_url = database_url
         backend_dir = Path(__file__).parent.parent.parent
-        # self.script_location = backend_dir / "alembic"
-        # self.alembic_cfg_path = backend_dir / "alembic.ini"
+        self.script_location = backend_dir / "alembic"
+        self.alembic_cfg_path = backend_dir / "alembic.ini"
         self.engine = create_engine(database_url)  # noqa
 
     def __enter__(self):
@@ -30,6 +30,13 @@ class DatabaseManager:
         else:
             self._session.commit()
         self._session.close()
+
+    def run_migrations(self):
+        logger.info(f"Running DB migrations in {self.script_location}")
+        alembic_cfg = Config()
+        alembic_cfg.set_main_option("script_location", str(self.script_location))
+        alembic_cfg.set_main_option("sqlalchemy.url", self.database_url)
+        command.upgrade(alembic_cfg, "head")
 
     def get_session(self):
         with Session(self.engine) as session:
@@ -49,6 +56,7 @@ class DatabaseManager:
 
         inspector = inspect(self.engine)
         required_tables = [
+            "alembic_version",
             "book",
             "member",
             "issue_history",
