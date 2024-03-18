@@ -1,12 +1,9 @@
 import os
 
-import click
-import frappe_library.services.api.endpoints
 from dotenv import load_dotenv
 from flask import Blueprint, Flask
-from flask.cli import with_appcontext
 from flask_cors import CORS
-from frappe_library.services.api.router import base_bp, test_bp
+from frappe_library.api.router import base_bp, test_bp
 from frappe_library.services.constants import DATABASE_URL
 from frappe_library.services.custom_commands import create_db_command
 from frappe_library.services.database.connections import get_db_connection_url
