@@ -2,5 +2,4 @@
 .venv
 poetry.lock
 __pycache__/
-requirements.txt
 node_modules/
