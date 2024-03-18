@@ -8,14 +8,13 @@ maintainers = [
 ]
 repository = "https://github.com/Anv3sh/frappe_library"
 keywords = ["library","system"]
-packages = [{ include = "frappe_library", from = "./" }]
-include = ["frappe_library/*", "frappe_library/**/*"] 
+
   
 [tool.poetry.dependencies]  
 python = "^3.9"  
 annotated-types = "^0.6.0"  
 blinker = "^1.7.0"  
-build = "^1.1.1"  
+build = "^1.1.1"    
 CacheControl = "^0.14.0"  
 certifi = "^2024.2.2"  
 cffi = "^1.16.0"  
