@@ -5,8 +5,8 @@ from datetime import datetime, timezone
 from uuid import UUID
 import requests
 from flask import Response, request
-from frappe_library.services.api.router import books_bp, members_bp, test_bp
-from frappe_library.services.api.schema import (
+from frappe_library.api.router import books_bp, members_bp
+from frappe_library.api.schema import (
     BookSchema,
     ImportBookSchema,
     IssueBookSchema,
@@ -14,7 +14,7 @@ from frappe_library.services.api.schema import (
     ReturnBookSchema,
     SearchBook,
 )
-from frappe_library.services.api.utils import (
+from frappe_library.api.utils import (
     BooksParser,
     IssueHistoryParser,
     MemberParser,
