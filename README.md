@@ -63,7 +63,7 @@ To utilize the application effectively, follow these steps:
 
 ### Backend:
 
-1. Go to `src/backend` and create a virtual environment.
+1. Create a virtual environment.
 ```
 py -m venv .venv
 ```
@@ -75,7 +75,7 @@ source .venv/bin/activate
 4. Run `make backend` to run the backend server.
 
 ### Frontend:
-1. Go to `src/frontend/frappe_library` and run.
+1. Go to `./frappe_library` and run.
 ```
 yarn dev
 ```
