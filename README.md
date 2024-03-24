@@ -75,6 +75,8 @@ source .venv/bin/activate
 4. Run `make backend` to run the backend server.
 
 ### Frontend:
+https://github.com/Anv3sh/frappe_library_frontend
+
 1. Go to `./frappe_library` and run.
 ```
 yarn dev
