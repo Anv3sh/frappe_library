@@ -83,3 +83,20 @@ yarn dev
 ```
 2. You can now access the frontend on `localhost:3000`.
 
+
+## Screenshots:
+
+1. Available books listing section.
+ ![image](https://github.com/Anv3sh/frappe_library/assets/51405870/92651bcf-4957-4956-b187-1537ed3967a2)
+
+2. Issue Book section.
+![image](https://github.com/Anv3sh/frappe_library/assets/51405870/31d29402-19a2-4dbc-a47b-897e683c9e7e)
+
+3. Member registration section.
+![image](https://github.com/Anv3sh/frappe_library/assets/51405870/b4e72c2f-8672-4f9d-ae95-a4f68697efa2)
+
+4. Issued books listing section.
+  ![image](https://github.com/Anv3sh/frappe_library/assets/51405870/1e547d79-0ad3-4c72-b09a-bb3b72728630)
+
+5. Navbar dropdowns.
+![image](https://github.com/Anv3sh/frappe_library/assets/51405870/67b5062a-509c-449d-88ae-05ece0ff2e74)
